@@ -1,0 +1,214 @@
+	.pos 0 
+init:	irmovl Stack, %esp  	# Set up stack pointer  
+	irmovl Stack, %ebp  	# Set up base pointer   
+	call main		# Execute main program
+	halt			# Terminate program 
+
+main:
+	pushl	%ebp
+	#movl	%esp, %ebp
+    rrmovl %esp, %ebp
+	#subl	$36, %esp
+    irmovl $36, %esi
+    subl %esi, %esp
+	#movl	$2, -36(%ebp)
+    irmovl $2, %esi
+    rmmovl %esi, -36(%ebp)
+	#movl	$4, -32(%ebp)
+    irmovl $4, %esi
+    rmmovl %esi, -32(%ebp)
+	#movl	$5, -28(%ebp)
+    irmovl $5, %esi
+    rmmovl %esi, -28(%ebp)
+	#movl	$3, -24(%ebp)
+    irmovl $3, %esi
+    rmmovl %esi, -24(%ebp)
+	#movl	$6, -20(%ebp)
+    irmovl $6, %esi
+    rmmovl %esi, -20(%ebp)
+	#movl	$2, -16(%ebp)
+    irmovl $2, %esi
+    rmmovl %esi, -16(%ebp)
+	#movl	$3, -40(%ebp)
+    irmovl $3, %esi
+    rmmovl %esi, -40(%ebp)
+	#subl	$8, %esp
+    irmovl $8, %esi
+    subl	%esi, %esp
+	#pushl	-40(%ebp)
+    mrmovl -40(%ebp), %esi
+    pushl %esi
+    #######################
+	#leal	-36(%ebp), %eax
+    rrmovl %ebp, %esi
+    irmovl $36, %ecx
+    subl %ecx, %esi
+    rrmovl %esi, %eax
+    #######################
+	pushl	%eax
+	call	get_pair
+	#leave
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+get_pair: #Maps to get_pair
+	pushl	%ebp
+	#movl	%esp, %ebp
+    rrmovl	%esp, %ebp
+	#subl	$24, %esp
+    irmovl $24, %esi
+    subl	%esi, %esp
+	#movl	$1, -16(%ebp)
+    irmovl $1, %esi
+    rmmovl %esi, -16(%ebp)
+	jmp    L4
+L5:
+	#movl	8(%ebp), %eax
+    mrmovl	8(%ebp), %eax
+	#addl	$4, %eax
+    irmovl $4, %esi
+    addl %esi, %eax
+	#movl	(%eax), %edx
+    mrmovl (%eax), %edx
+	#movl	8(%ebp), %eax
+    mrmovl	8(%ebp), %eax
+	#movl	(%eax), %eax
+    mrmovl	(%eax), %eax
+	#subl	$8, %esp
+    irmovl $8, %esi
+    subl %esi, %esp
+	pushl	%edx
+	pushl	%eax
+	call	raise2pwr
+	#addl	$16, %esp
+    irmovl $16, %esi
+    addl %esi, %esp
+	#movl	%eax, -12(%ebp)
+    rmmovl %eax, -12(%ebp)
+	#addl	$8, 8(%ebp)
+    irmovl $8, %esi
+    mrmovl 8(%ebp), %ecx
+    addl %esi, %ecx
+    rmmovl %ecx, 8(%ebp)
+	#addl	$1, -16(%ebp)
+    irmovl $1, %esi
+    mrmovl -16(%ebp), %ecx
+    addl %esi, %ecx
+    rmmovl %ecx, -16(%ebp)
+L4:
+	#movl	-16(%ebp), %eax
+    mrmovl	-16(%ebp), %edx #Note: Changed from %eax so the final answer would remain in %eax
+	#cmpl	12(%ebp), %eax
+    mrmovl 12(%ebp), %esi
+    rrmovl %edx, %ecx
+    subl %esi, %ecx
+	jle	L5
+	#leave #Set %esp to %ebp, then pop %ebp
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+raise2pwr: #maps to raise2pwr
+	pushl	%ebp
+	#movl	%esp, %ebp
+    rrmovl	%esp, %ebp
+	#subl	$24, %esp
+    irmovl $24, %esi
+    subl %esi, %esp
+	#movl	$1, -12(%ebp)
+    irmovl $1, %esi
+    rmmovl %esi, -12(%ebp)
+	#movl	$1, -16(%ebp)
+    irmovl $1, %esi
+    rmmovl %esi, -16(%ebp)
+	jmp	L7
+L8:
+	#subl	$8, %esp
+    irmovl $8, %esi
+    subl %esi, %esp
+	#pushl	8(%ebp)
+    mrmovl 8(%ebp), %esi
+    pushl %esi
+	#pushl	-12(%ebp)
+    mrmovl -12(%ebp), %esi
+    pushl %esi
+	call	mul_op
+	#addl	$16, %esp
+    irmovl $16, %esi
+    addl %esi, %esp
+	#movl	%eax, -12(%ebp)
+    rmmovl	%eax, -12(%ebp)
+	#addl	$1, -16(%ebp)
+    irmovl $1, %esi
+    mrmovl -16(%ebp), %ecx
+    addl %esi, %ecx
+    rmmovl %ecx, -16(%ebp)
+	#movl	-16(%ebp), %eax
+    mrmovl	-16(%ebp), %eax
+	#cmpl	12(%ebp), %eax
+    mrmovl 12(%ebp), %esi
+    rrmovl %eax, %ecx
+    subl %esi, %ecx
+	jle	 L8
+	#movl	-12(%ebp), %eax
+    ##################################################
+    mrmovl	-12(%ebp), %eax #LOOK HERE FOR THE RESULTS!
+    ##################################################
+	#leave
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+L7:
+	#movl	-16(%ebp), %eax
+    mrmovl	-16(%ebp), %eax
+	#cmpl	12(%ebp), %eax
+    mrmovl 12(%ebp), %esi
+    rrmovl %eax, %ecx
+    subl %esi, %ecx
+	jle	L8
+    #movl	-12(%ebp), %eax
+    mrmovl	-12(%ebp), %eax
+	#leave
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+mul_op: #maps to mul_op
+	pushl	%ebp
+	#movl	%esp, %ebp
+    rrmovl	%esp, %ebp
+	#subl	$16, %esp
+    irmovl $16, %esi
+    subl %esi, %esp
+	#movl	8(%ebp), %eax
+    mrmovl	8(%ebp), %eax
+	#movl	%eax, -4(%ebp)
+    rmmovl	%eax, -4(%ebp)
+	jmp	L11
+L12: #Multiply
+	#movl	8(%ebp), %eax
+    mrmovl	8(%ebp), %eax
+	#addl	%eax, -4(%ebp)
+    mrmovl -4(%ebp), %esi
+    addl %eax, %esi
+    rmmovl %esi, -4(%ebp)
+	#subl	$1, 12(%ebp)
+    irmovl $1, %esi
+    mrmovl 12(%ebp), %ecx
+    subl %esi, %ecx
+    rmmovl %ecx, 12(%ebp)
+L11: #Loop 
+	#cmpl	$1, 12(%ebp)
+    irmovl $1, %esi
+    mrmovl 12(%ebp), %ecx
+    subl %esi, %ecx
+	jg	L12
+	#movl	-4(%ebp), %eax
+    mrmovl	-4(%ebp), %eax
+	#leave
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+
+# The stack starts here and grows to lower addresses
+	.pos 0x1000	
+Stack:
+

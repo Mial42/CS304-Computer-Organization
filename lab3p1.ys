@@ -1,0 +1,68 @@
+	.pos 0 
+init:	irmovl Stack, %esp  	# Set up stack pointer  
+	irmovl Stack, %ebp  	# Set up base pointer   
+	call Main		# Execute main program
+	halt			# Terminate program 
+
+Input: .long 0x5
+       .long 0xc
+       .long 0x3
+Done:  .long 0xFFFFFFFF
+
+Main:	pushl %ebp 
+	rrmovl %esp,%ebp
+	irmovl $-16, %esi
+	andl %esi, %esp
+	irmovl $48, %esi
+	subl %esi, %esp
+	irmovl Input, %esi
+	rmmovl %esi, 44(%esp)
+	jmp L2
+
+L7: mrmovl 44(%esp), %eax
+	mrmovl (%eax), %eax
+	rmmovl %eax, 40(%esp)
+	irmovl $1, %edx
+	rmmovl %edx, 36(%esp)
+	jmp L3
+L6: mrmovl 40(%esp), %eax
+	rmmovl %eax, 32(%esp)
+	mrmovl 36(%esp), %eax
+	rmmovl %eax, 28(%esp)
+	jmp L4
+L5: mrmovl 28(%esp), %eax
+	mrmovl 36(%esp), %esi
+	addl %eax, %esi
+	rmmovl %esi, 36(%esp)
+	irmovl $1, %ecx
+	mrmovl 32(%esp), %edx
+	subl %ecx, %edx
+	rmmovl %edx, 32(%esp)
+L4: irmovl $1, %ecx
+	mrmovl 32(%esp), %edx
+	subl %ecx, %edx
+	jg L5
+	mrmovl 40(%esp), %edx
+	subl %ecx, %edx
+	rmmovl %edx, 40(%esp)
+L3: irmovl $0, %edx
+	mrmovl 40(%esp), %ecx
+	subl %edx, %ecx
+	jne L6
+	mrmovl 44(%esp), %ecx
+	irmovl $4, %esi
+	addl %ecx, %esi
+	rmmovl %esi, 44(%esp)
+	mrmovl 36(%esp), %eax #Check content in %eax for result
+	rrmovl %eax, %ebx #for debugging
+L2:	mrmovl 44(%esp), %eax
+	mrmovl (%eax), %eax
+	irmovl $-1, %edx #Add 1 to the value in %eax. 
+	subl %edx, %eax
+	jne L7 #If 1 + %eax is not 0, go to L7
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+# The stack starts here and grows to lower addresses
+	.pos 0x1000	
+Stack:
